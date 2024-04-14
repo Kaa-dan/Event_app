@@ -1,27 +1,16 @@
-import express from "express";
-import cors from "cors";
-import "dotenv/config";
-import mongoose from "mongoose";
+const express = require("express");
+const cors = require("cors");
 const app = express();
-
-
-// DB connection 
-mongoose
-  .connect(process.env.MONGO_CONNECTION)
-  .then(() => {
-    console.log("Connected to DB");
-  })
-  .catch((error) => {
-    console.log(error);
-  });
-
+const db = require("./server/models");
 // middlewares
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
 app.use(cors());
 
+//routers
 
-
-app.listen(3000, () => {
-  console.log(`sever is running @ port 7000`);
+db.sequelize.sync().then(() => {
+  app.listen(3000, () => {
+    console.log(`server is running @ port 3000`);
+  });
 });

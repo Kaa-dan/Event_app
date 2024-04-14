@@ -1,0 +1,291 @@
+
+
+CREATE DATABASE  name;
+
+USE name ;
+
+DROP DATABASE name ;
+
+ALTER DATABASE  name READ ONLY =1 ;
+
+CREATE TABLE employees () ;
+
+INT VARCHAR DECIMAL
+
+SELECT * FROM  name ;
+
+CREATE TABLE employees (
+employee_id INT,
+first_name VARCHAR(50),
+last_name VARCHAR(50),
+hourly_pay DECIMAL(5,2),
+hire_date  DATE);
+
+RENAME TABLE employees to workers ;
+
+ALTER TABLE employees 
+ADD phone_number VARCHAR(15) ;
+
+ALTER TABLE employees 
+RENAME column phone_number TO  mobile_number ;
+
+alter table employees
+modify column email varchar(100) ;
+
+
+alter table employees 
+modify column email varchar(100)
+after last_name ;
+
+First
+
+alter table employees 
+drop column email ;
+
+insert into employees 
+values(1, "Eugene", "krabs", 25.50 ,"2023-01-02") ;
+
+insert into employees 
+values(2,"squidward","tentacle",15.00,"2023-01-03") ,
+	  (3,"spongbob","squarepants",12.50,"2023-01-04"),
+	  (4,"patrick","star",17.25,"2023-01-06"),
+      (5,'sandy','cheeks',17.25,'2023-01-06')
+;
+
+insert into employees (employee_id,first_name,last_name)
+values (6,'sheldon','plankton') ;
+
+
+select last_name from employees
+
+select * from employees 
+where last_name = "krabs" ;
+
+select * from employees
+where hourly_pay >= 15 ;
+
+!=
+
+select * from employees
+where hire_date is not null ;
+
+SET SQL_SAFE_UPDATES=0;
+
+UPDATE employees 
+SET hourly_pay = 10.25 
+WHERE employee_id = 6;
+
+delete from employees ;
+
+set autocommit = 0ff ;
+
+rollback ;
+commit ;
+
+create table test (
+my_date DATE,
+my_time TIME,
+my_datetime DATETIME )
+ ;
+
+
+ insert into test 
+ values(current_date(), current_time(),now()) ;
+
+ create table products (
+ product_id INT,
+ product_name varchar(25) unique;
+ price decimal(4,2)
+ )
+
+ alter table products 
+ add constraints 
+ uique(produc_name) ;
+
+ create table products(
+ product_name varchar(25) not null)
+
+alter table products 
+modify price decimal(4,2) 
+not null;
+
+
+create table employees (
+employee_id int ,
+last_name varchar(49),
+hourly_pay decimal(5,2)
+
+constraint chk_hourly check (hourly_pay >12.2) ;
+
+alter table employees 
+add constraint  chk_hourly check(hourly_pay >= 10)
+
+alter table employees 
+drop check chk_hourly ;
+
+create table product (
+price decimal(2,4) default 00)
+
+alter table product 
+alter price set default 0 ;
+
+create table transaction (
+transaction_id int primarykey,
+amount decimal(2,3));
+
+alter table trasaction 
+add constraint primary key(transaction_id)
+;
+
+creat table transaction (
+transaction_id int primiray key auto_increment )
+
+alter table transaction 
+auto_increment(1) ;
+
+
+create table transaction ( transation_id int primary key auto_increment,
+amoutn decimal(2,3),
+customer_id int,
+foreign key(customer_id) reference customer(customer_id))
+
+alter table transaction 
+drop foreign key name ;
+
+alter table transaction 
+add constraint foreigh_keyivj
+foreign key (customer_id) reference (customer_id)
+
+select  * from transactions
+inner join customers 
+on trasaction.customer_id = customer.customer_id ;
+
+
+select count(amount) as amount
+from transactions ;
+
+
+select max(amount) 
+from transactions ;
+
+select min(amount)
+from transactions ;
+
+select avg(amount) 
+from transactions ;
+
+select sum(amoutn) 
+from transactions ;
+
+selct concat(firstname , lastname) as fullname
+from employees ;
+
+update employees 
+set job = 'janitor' 
+where employee_id = 6 ;
+
+
+select * from employees 
+where hiredate < '23'  and job = 'cook'
+
+
+select * from employees 
+where name='dat' or job='dat'
+
+select * from employees 
+where not job = 'manager'
+
+select * from employees 
+where not job = 'manager' and not job = 'asst manager';
+
+select * from employees 
+where hiredate between '24' and '25';
+
+select * from employees where job in ('cook','cashier','janitor')
+
+
+select * from employees 
+where full_name like 's%';
+
+select * from employees 
+where hiredat like '2024%';
+
+select * from employees 
+where name like '%raj';
+
+select * from employees 
+where name like '_thin_';
+
+select * from employees 
+order by first name desc ;
+
+select * from employees 
+limit 1 ;
+
+select * from employees 
+order by last_name limit 1 ;
+
+select * from employees 
+order by last_name  
+limit 1,1 ;
+
+
+select * from employees 
+union all
+select * from customers
+
+
+select * from customer as a 
+inner join customer as b
+on a.referal_d = b.customer_id ;
+
+select customer_id , a.first_name, a.last_name
+b.first_name,b.last_name
+from cunstomers as a 
+inner join customer as b 
+on a.referal_id = b.referal_id ;
+
+create view name as
+select first_name ,last_name
+from employees ;
+
+drop view name ;
+
+creat view customer_email as
+select email 
+from employees ;
+
+create index last_name_ind
+on customers(lastname) ;
+
+create index last_name_ind,first_name_index
+on customers(last_name,first_name) ;
+
+alter table name 
+drop index name ;
+
+select first_name ,last_name ,hourly_pay,(select avg (hourly_pay)
+from employees ) as average pay from employees ;
+
+
+select * from employees 
+where hourly_ pay > (select avg(hourly_pay) from employees);
+
+
+select * from customers
+where customer_id in
+(select distinct customer_id from transaction
+where customer_id is not null) ;
+
+select sum(amount) from transactions
+group by order_date ;
+
+select count(amount) ,customer_id 
+from transactions
+group by customer_id 
+having count(amount) >1 ;
+
+
+select count(amount ) ,order date
+from transaction 
+group by order_date with rollup ;
