@@ -12,6 +12,10 @@ module.exports = (sequelize, DataTypes) => {
       type: DataTypes.BOOLEAN,
       defaultValue: false,
     },
+    password: {
+      type: DataTypes.STRING,
+      allowNull: false,
+    },
   });
   return Users;
 };

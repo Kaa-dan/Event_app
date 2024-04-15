@@ -2,15 +2,13 @@ import React from "react";
 import Party from "../assets/party.jpg";
 import Party2 from "../assets/party2.jpg";
 import Party3 from "../assets/party3.jpg";
-import { FaInstagram } from "react-icons/fa";
-import { FaGithubSquare } from "react-icons/fa";
-import { FaSquareXTwitter } from "react-icons/fa6";
+
 import { motion } from "framer-motion";
 import Header from "@/components/Header";
 const Layout = () => {
   return (
     <div>
-      <Header />
+      {/* <Header /> */}
       <section className="flex relative mt-20 ">
         <div className=" flex flex-col gap-6 ml-8 justify-center">
           <div className="text-5xl font-bold">
@@ -78,22 +76,7 @@ const Layout = () => {
           </div>
         </div>
       </section>
-      <footer className="h-40 flex justify-between items-center ">
-        <div className="ml-20 text-gray-400 font-bold">
-          2024 nithin raj .All rights reserved.
-        </div>
-        <div className="flex gap-10 mr-10">
-          <div className="text-3xl">
-            <FaInstagram />
-          </div>
-          <div className="text-3xl">
-            <FaGithubSquare />
-          </div>
-          <div className="text-3xl">
-            <FaSquareXTwitter />
-          </div>
-        </div>
-      </footer>
+      
     </div>
   );
 };
