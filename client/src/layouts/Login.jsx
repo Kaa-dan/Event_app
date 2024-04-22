@@ -1,16 +1,40 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { FiEye, FiEyeOff } from "react-icons/fi";
-import Footer from "@/components/Footer";
+
+import axios from "axios";
+import { Toast } from "@/util/Toast";
+import { useDispatch, useSelector } from "react-redux";
+import { signInSuccess, signInFailutre } from "@/store/userSlice";
+import { data } from "autoprefixer";
 const Login = () => {
   const [passwordVisible, setPasswordVisible] = useState(false);
-  const [password, setPassword] = useState("");
-
+  const [formData, setFormData] = useState({ email: "", password: "" });
+  const Navigate = useNavigate();
+  const dispatch = useDispatch();
   const togglePasswordVisibility = () => {
     setPasswordVisible((prevVisible) => !prevVisible);
   };
-  const Navigate = useNavigate();
 
+  const onChangeHandler = (e) => {
+    setFormData((prev) => ({ ...prev, [e.target.id]: e.target.value }));
+  };
+
+  const submitHandler = async () => {
+    try {
+      if (formData.password && formData.email) {
+        const res = await axios.post("/api/auth/signIn", formData);
+        console.log(res.data.user);
+        dispatch(signInSuccess(res.data.user));
+        Navigate("/");
+        Toast("Welcome");
+      } else {
+        Toast("credentials required");
+      }
+    } catch (error) {
+      console.log(error);
+    }
+  };
   return (
     <div className="flex items-center justify-center mt-36   ">
       <div className="w-1/2 bg-blue-300 shadow-lg rounded-xl p-10">
@@ -20,9 +44,12 @@ const Login = () => {
           </div>
           <div className="mb-4">
             <input
-              type="text"
+              type="email"
               className="w-full border rounded-md py-2 px-3"
-              placeholder="Username"
+              placeholder="Email"
+              id="email"
+              onChange={onChangeHandler}
+              value={formData.email}
             />
           </div>
           <div className="relative">
@@ -30,8 +57,9 @@ const Login = () => {
               type={passwordVisible ? "text" : "password"}
               className="w-full border rounded-md py-2 px-3 pr-10"
               placeholder="Password"
-              value={password}
-              onChange={(e) => setPassword(e.target.value)}
+              id="password"
+              value={formData.password}
+              onChange={onChangeHandler}
             />
             {passwordVisible ? (
               <FiEyeOff
@@ -45,13 +73,13 @@ const Login = () => {
               />
             )}
           </div>
-          <button className="w-full bg-blue-500 text-white rounded-md mt-4 py-2">
+          <button
+            className="w-full bg-blue-500 text-white rounded-md mt-4 py-2"
+            onClick={submitHandler}
+          >
             Login
           </button>
           <div className="mt-4 text-center">
-            {/* <span className="mr-10 text-blue-500 cursor-pointer">
-              Forgot password?
-            </span> */}
             <span
               className="text-blue-500 cursor-pointer"
               onClick={() => {

@@ -1,21 +1,32 @@
-module.exports = (sequelize, DataTypes) => {
-  const Users = sequelize.define("Users", {
+import mongoose from "mongoose";
+
+const userSchema = new mongoose.Schema(
+  {
     userName: {
-      type: DataTypes.STRING,
-      allowNull: false,
+      type: String,
+      required: true,
+     
     },
     email: {
-      type: DataTypes.STRING,
-      allowNull: false,
-    },
-    online: {
-      type: DataTypes.BOOLEAN,
-      defaultValue: false,
+      type: String,
+      required: true,
+      unique: true,
     },
     password: {
-      type: DataTypes.STRING,
-      allowNull: false,
+      type: String,
+      required: true,
     },
-  });
-  return Users;
-};
+    avatar: {
+      type: String,
+      default:
+        "https://res.cloudinary.com/dikqlipwc/image/upload/v1711961208/idixc4df85zpt1eggg9k.jpg",
+    },
+  },
+  {
+    timestamps: true,
+  }
+);
+
+const User = mongoose.model("User", userSchema);
+
+export default User;

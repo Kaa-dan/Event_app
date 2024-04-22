@@ -1,8 +1,12 @@
 import React from "react";
+import { useSelector } from "react-redux";
 import { Link } from "react-router-dom";
 import { useNavigate } from "react-router-dom";
+
 const Header = () => {
   const Navigate = useNavigate();
+  const { currentUser } = useSelector((state) => state.user);
+  console.log(currentUser);
   return (
     <div>
       {" "}
@@ -19,14 +23,21 @@ const Header = () => {
               </li>
             </ul>
           </nav>
-          <button
-            className="bg-blue-600 text-white rounded-xl p-3 hover:bg-blue-800 hover:shadow-m"
-            onClick={() => {
-              Navigate("/sign-in");
-            }}
-          >
-            Get started
-          </button>
+          {currentUser ? (
+            <Link to="/profile">
+              {" "}
+              <img className="h-8" src={currentUser?.avatar} alt="" />
+            </Link>
+          ) : (
+            <button
+              className="bg-blue-600 text-white rounded-xl p-3 hover:bg-blue-800 hover:shadow-m"
+              onClick={() => {
+                Navigate("/sign-in");
+              }}
+            >
+              Get started
+            </button>
+          )}
         </div>
       </header>
     </div>
