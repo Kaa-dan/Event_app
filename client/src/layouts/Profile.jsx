@@ -1,20 +1,35 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import { useSelector } from "react-redux";
 import { useDispatch } from "react-redux";
 import { signOutUserSuccess } from "@/store/userSlice";
 import { useNavigate } from "react-router-dom";
 import { Toast } from "@/util/Toast";
+import Spinner from "@/components/Spinner";
+import {
+  getDownloadURL,
+  getStorage,
+  ref,
+  uploadBytesResumable,
+} from "firebase/storage";
+import { app } from "../firebase";
+import axios from "axios";
+import BookedEvnets from "../components/BookedEvnets";
+import MyEvnets from "../components/MyEvnets";
 const Profile = () => {
   const { currentUser } = useSelector((state) => state.user);
+  const [uploading, setUploading] = useState(false);
+  const [page, setPage] = useState("MY EVENTS");
   const [formData, setFormData] = useState({
     eventName: "",
     location: "",
     description: "",
+    avatar: null,
+    userId: currentUser._id,
   });
   const [imageFile, setImageFile] = useState(null);
   const [color, setColor] = useState({
-    left: "bg-blue-500",
-    right: "bg-blue-700",
+    left: "bg-blue-700",
+    right: "bg-blue-500",
   });
   const dispatch = useDispatch();
   const navigate = useNavigate();
@@ -34,6 +49,58 @@ const Profile = () => {
       console.log(error.message);
     }
   };
+  const submitHandler = async () => {
+    try {
+      if (
+        formData.avatar &&
+        formData.description &&
+        formData.eventName &&
+        formData.location
+      ) {
+        const res = await axios.post("/api/user/event", formData);
+        console.log(res);
+        Toast(res.data.message);
+        setPage("MY EVENTS");
+      } else Toast("Fill all details");
+    } catch (error) {
+      Toast(error.message);
+    }
+  };
+  const handleFileUpload = (file) => {
+    try {
+      const storage = getStorage(app);
+      const fileName = new Date().getTime() + file.name;
+      const storageRef = ref(storage, fileName);
+      const uploadTask = uploadBytesResumable(storageRef, file);
+      setUploading((prev) => !prev);
+      uploadTask.on(
+        "state_changed",
+        (snapshot) => {
+          const progress =
+            (snapshot.bytesTransferred / snapshot.totalBytes) * 100;
+          // setFilePerc(Math.round(progress));
+        },
+        (error) => {
+          // setFileUploadError(true);
+        },
+        () => {
+          getDownloadURL(uploadTask.snapshot.ref).then((downloadURL) =>
+            setFormData((prev) => ({ ...prev, avatar: downloadURL }))
+          );
+        }
+      );
+      setUploading((prev) => !prev);
+    } catch (error) {
+      console.log(error.message);
+    }
+  };
+
+  useEffect(() => {
+    if (imageFile) {
+      handleFileUpload(imageFile);
+    }
+  }, [imageFile]);
+
   return (
     <div className="container mx-auto my-5 p-5">
       <div className="md:flex no-wrap md:-mx-2 ">
@@ -62,6 +129,7 @@ const Profile = () => {
                       left: "bg-blue-700",
                       right: "bg-blue-500",
                     });
+                    setPage("MY EVENTS");
                   }}
                 >
                   My events
@@ -74,6 +142,7 @@ const Profile = () => {
                         left: "bg-blue-500",
                         right: "bg-blue-700",
                       });
+                      setPage("BOOKED EVENTS");
                     }}
                   >
                     Booked events
@@ -93,50 +162,79 @@ const Profile = () => {
           <div className="flex justify-between">
             <div className="text-blue-700 text-xl border-b-2 border-blue-500">
               {" "}
-              MY EVENTS
+              {page}
             </div>
-            <button className="bg-blue-500 text-white w-28 rounded-lg h-10 shadow-lg">
+            <button
+              className="bg-blue-500 text-white w-28 rounded-lg h-10 shadow-lg"
+              onClick={() => setPage("CREATE EVENTS")}
+            >
               Create Event
             </button>
           </div>
-          <div className="flex ml-10 mt-10">
-            <div className="my-2 text-blue-700  flex flex-col gap-2">
-              <input
-                type="text"
-                placeholder="Event Name"
-                className="w-full border border-blue-400 rounded-md py-2 px-3 pr-10"
-                value={formData.eventName}
-                id="eventName"
-                onChange={onChangeHandler}
-              />
-              <input
-                type="text"
-                placeholder="Location"
-                className="w-full border border-blue-400 rounded-md py-2 px-3 pr-10"
-                value={formData.location}
-                id="location"
-                onChange={onChangeHandler}
-              />
-              <textarea
-                className="w-full border border-blue-400 rounded-md py-2 px-3 resize-none"
-                rows="3"
-                placeholder="Description"
-                value={formData.description}
-                id="description"
-                onChange={onChangeHandler}
-              ></textarea>
-              <input
-                type="file"
-                className="w-full border  border-blue-400 rounded-md py-2 px-3 pr-10"
-              />
-              <button className="bg-blue-800 text-white rounded-lg p-2">
-                Submit
-              </button>
+          {page === "CREATE EVENTS" && (
+            <div className="flex ml-10 mt-10 ">
+              <div className="my-2 text-blue-700  flex flex-col justify-between gap-2">
+                <input
+                  type="text"
+                  placeholder="Event Name"
+                  className="w-full border border-blue-400 rounded-md py-2 px-3 pr-10"
+                  value={formData.eventName}
+                  id="eventName"
+                  onChange={onChangeHandler}
+                />
+                <input
+                  type="text"
+                  placeholder="Location"
+                  className="w-full border border-blue-400 rounded-md py-2 px-3 pr-10"
+                  value={formData.location}
+                  id="location"
+                  onChange={onChangeHandler}
+                />
+                <textarea
+                  className="w-full border border-blue-400 rounded-md py-2 px-3 resize-none"
+                  rows="3"
+                  placeholder="Description"
+                  value={formData.description}
+                  id="description"
+                  onChange={onChangeHandler}
+                ></textarea>
+                <input
+                  type="file"
+                  className="w-full border  border-blue-400 rounded-md py-2 px-3 pr-10"
+                  onChange={(e) => {
+                    setImageFile(e.target.files[0]);
+                  }}
+                />
+                {uploading ? (
+                  <Spinner />
+                ) : (
+                  <button
+                    className="bg-blue-800 text-white rounded-lg p-2"
+                    onClick={submitHandler}
+                  >
+                    Submit
+                  </button>
+                )}
+              </div>
+
+              <div>
+                {formData?.avatar ? (
+                  <img
+                    className="h-full w-full"
+                    src={formData?.avatar}
+                    alt=""
+                  />
+                ) : (
+                  <div className="text-red-600  h-full ml-16 place-content-center">
+                    {" "}
+                    No image files uploaded
+                  </div>
+                )}
+              </div>
             </div>
-            <div>
-              <img src="" alt="" />
-            </div>
-          </div>
+          )}
+          {page === "MY EVENTS" && <MyEvnets />}
+          {page === "BOOKED EVENTS" && <BookedEvnets />}
         </div>
       </div>
     </div>

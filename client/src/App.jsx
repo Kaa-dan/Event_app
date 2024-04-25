@@ -11,6 +11,7 @@ import Header from "./components/Header";
 import Events from "./layouts/Events";
 import Footer from "./components/Footer";
 import Profile from "./layouts/Profile";
+import Test from './layouts/Test'
 function App() {
   return (
     <>
@@ -22,6 +23,7 @@ function App() {
           <Route path="/sign-in" element={<Login />} />
           <Route path="/event-list" element={<Events />} />
           <Route path="/profile" element={<Profile />} />
+          <Route path="/test" element={<Test />} />
           <Route path="*" element={<Navigate to="/" />} />
         </Routes>
         <Footer />
