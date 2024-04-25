@@ -23,7 +23,7 @@ const MyEvnets = () => {
     getEventHandler();
   }, []);
   return (
-    <div class="grid grid-flow-col grid-cols-3 gap-2 mt-6  ">
+    <div className="grid grid-flow-col grid-cols-3 gap-2 mt-6  ">
       {myEvents.map((value) => (
         <div
           key={value?._id}

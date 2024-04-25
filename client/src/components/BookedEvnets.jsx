@@ -9,7 +9,7 @@ const BookedEvnets = () => {
   console.log(currentUser);
   const cancelHandler = async (bookingId) => {
     const res = await axios.patch(
-      `/api/user/cancelbooking?id=${currentUser._id}&bookingId=${bookingId}`
+      `/api/user/cancelbooking?userId=${currentUser._id}&bookingId=${bookingId}`
     );
     console.log(res)
     if (res) {
