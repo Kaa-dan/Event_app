@@ -38,7 +38,7 @@ const Events = () => {
 
   useEffect(() => {
     getEventHandler(search);
-  }, []);
+  }, [search]);
 
   return (
     <div className="bg-white relative flex flex-col justify-center items-center min-h-96 ">
