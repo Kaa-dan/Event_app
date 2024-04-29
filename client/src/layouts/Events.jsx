@@ -8,7 +8,7 @@ import { Toast } from "../util/Toast";
 const Events = () => {
   const [events, setEvents] = useState([]);
   const [loading, setLoading] = useState(false);
-  const { currentUser } = useSelector((state) => state.user);
+  const { currentUser } = useSelector((state) => state?.user);
   const [search, setSearch] = useState("");
   console.log(search);
 
@@ -70,7 +70,7 @@ const Events = () => {
             events.map((value) => (
               <a
                 className={`group bg-slate-100 rounded-md ${
-                  value?.hostedBy === currentUser._id ? "hidden" : ""
+                  value?.hostedBy === currentUser?._id ? "hidden" : ""
                 }`}
                 key={value?._id}
               >
@@ -90,7 +90,7 @@ const Events = () => {
                       {value?.location}
                     </p>
                   </div>
-                  {value?.bookedBy.includes(currentUser._id) ? (
+                  {value?.bookedBy.includes(currentUser?._id) ? (
                     <button className="bg-green-700 mt-7 text-white h-10 p-2 rounded-lg cursor-pointer ">
                       Booked
                     </button>
