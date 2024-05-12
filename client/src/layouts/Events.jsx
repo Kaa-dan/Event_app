@@ -30,7 +30,9 @@ const Events = () => {
         `/api/user/bookEvent?id=${id}&userId=${userId}`
       );
       console.log(res);
+
       Toast(res.data.message);
+      getEventHandler(search);
     } catch (error) {
       Toast(error.message);
     }
