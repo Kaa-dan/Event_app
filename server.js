@@ -11,13 +11,14 @@ const port = process.env.PORT || 3000;
 const __dirname = path.resolve();
 // DB connection
 mongoose
-  .connect(process.env.MONGO_CONNECTION)
-  .then(() => {
-    console.log("Connected to DB");
-  })
-  .catch((error) => {
-    console.log(error);
-  });
+.connect(process.env.MONGO_CONNECTION)
+.then(() => {
+  console.log("Connected to DB");
+})
+.catch((error) => {
+  console.log(error);
+});
+
 
 // middlewares
 app.use(express.json());
@@ -36,7 +37,7 @@ app.listen(port, () => {
 });
 
 app.use(express.static(path.join(__dirname, "client/dist")));
-
+console.log(path.join(__dirname, "client", "dist", "index.html"))
 app.get("*", (req, res) => {
   res.sendFile(path.join(__dirname, "client", "dist", "index.html"));
 });
